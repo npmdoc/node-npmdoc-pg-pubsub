@@ -1,0 +1,223 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="http://github.com/voxpelli/node-pg-pubsub"
+
+    >pg-pubsub (v0.3.0)</a>
+</h1>
+<h4>A Publish/Subscribe implementation on top of PostgreSQL NOTIFY/LISTEN</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.pg-pubsub">module pg-pubsub</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.pg-pubsub.pg-pubsub">
+            function <span class="apidocSignatureSpan"></span>pg-pubsub
+            <span class="apidocSignatureSpan">(conString, options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.pg-pubsub.super_">
+            function <span class="apidocSignatureSpan">pg-pubsub.</span>super_
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.pg-pubsub.toString">
+            function <span class="apidocSignatureSpan">pg-pubsub.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.pg-pubsub.toString">module pg-pubsub.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.pg-pubsub.toString.toString">
+            function <span class="apidocSignatureSpan">pg-pubsub.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.pg-pubsub" id="apidoc.module.pg-pubsub">module pg-pubsub</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.pg-pubsub.pg-pubsub" id="apidoc.element.pg-pubsub.pg-pubsub">
+        function <span class="apidocSignatureSpan"></span>pg-pubsub
+        <span class="apidocSignatureSpan">(conString, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">pg-pubsub = function (conString, options) {
+  EventEmitter.call(this);
+  var self = this;
+
+  this.setMaxListeners(0);
+
+  this.conString = conString;
+  this.channels = [];
+  this.conFails = 0;
+
+  options = options || {};
+
+  this.retry = new Retry({
+    name: &#x27;pubsub&#x27;,
+    try: function () {
+      var db = new pg.Client(self.conString);
+      db.on(&#x27;error&#x27;, function () {
+        self.retry.reset();
+        if (self.channels.length) {
+          self.retry.try();
+        }
+      });
+      return new Promise(function (resolve, reject) {
+        db.connect(function (err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(db);
+          }
+        });
+      });
+    },
+    success: function (db) {
+      db.on(&#x27;notification&#x27;, self._processNotification.bind(self));
+
+      self.channels.forEach(function (channel) {
+        db.query(&#x27;LISTEN &#x22;&#x27; + channel + &#x27;&#x22;&#x27;);
+      });
+    },
+    end: function (db) {
+      db.end();
+    },
+    log: options.log || console.log.bind(console),
+  });
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.pg-pubsub.super_" id="apidoc.element.pg-pubsub.super_">
+        function <span class="apidocSignatureSpan">pg-pubsub.</span>super_
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function EventEmitter() {
+  EventEmitter.init.call(this);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.pg-pubsub.toString" id="apidoc.element.pg-pubsub.toString">
+        function <span class="apidocSignatureSpan">pg-pubsub.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.pg-pubsub.toString" id="apidoc.module.pg-pubsub.toString">module pg-pubsub.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.pg-pubsub.toString.toString" id="apidoc.element.pg-pubsub.toString.toString">
+        function <span class="apidocSignatureSpan">pg-pubsub.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
