@@ -1,4 +1,6 @@
-# api documentation for  [pg-pubsub (v0.3.0)](http://github.com/voxpelli/node-pg-pubsub)  [![npm package](https://img.shields.io/npm/v/npmdoc-pg-pubsub.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-pg-pubsub) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-pg-pubsub.svg)](https://travis-ci.org/npmdoc/node-npmdoc-pg-pubsub)
+# npmdoc-pg-pubsub
+
+api documentation for  [pg-pubsub (v0.3.0)](http://github.com/voxpelli/node-pg-pubsub)  [![npm package](https://img.shields.io/npm/v/npmdoc-pg-pubsub.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-pg-pubsub) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-pg-pubsub.svg)](https://travis-ci.org/npmdoc/node-npmdoc-pg-pubsub)
 #### A Publish/Subscribe implementation on top of PostgreSQL NOTIFY/LISTEN
 
 [![NPM](https://nodei.co/npm/pg-pubsub.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/pg-pubsub)
